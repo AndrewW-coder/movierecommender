@@ -28,7 +28,7 @@ def recommend(title: str, n: int = 10):
         "recommendations": results
     }
 
-@app.get("/movies/search")
+@app.get("/movies/search") 
 def search_movies(q: str):
     matches = recommender.movies[
         recommender.movies['title'].str.contains(q, case=False, na=False)
