@@ -45,3 +45,28 @@ def search_movies(q: str):
     
     # Fix display titles in autocomplete results too
     return {"results": [fix_title(t) for t in matches]}
+
+@app.get("/weights/{title}")
+def get_weights(title: str, top_n: int = 20):
+    import re
+    from recommender.recommend import unfix_title
+    
+    lookup = title if title in recommender.indices else unfix_title(title)
+    if lookup not in recommender.indices:
+        raise HTTPException(status_code=404, detail=f"Movie '{title}' not found")
+    
+    idx = recommender.indices[lookup]
+    movie_vector = recommender.tfidf_matrix[idx]
+    
+    # Get feature names from the fitted vectorizer
+    feature_names = recommender.tfidf.get_feature_names_out()
+    
+    # Get non-zero scores for this movie only
+    cx = movie_vector.tocoo()
+    scores = [(feature_names[j], round(float(v), 4)) for j, v in zip(cx.col, cx.data)]
+    scores.sort(key=lambda x: x[1], reverse=True)
+    
+    return {
+        "title": title,
+        "weights": [{"term": t, "weight": w} for t, w in scores[:top_n]]
+    }

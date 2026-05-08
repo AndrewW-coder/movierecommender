@@ -1,11 +1,13 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link
-        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&amp;family=DM+Mono:wght@300;400;500&amp;display=swap"
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400;500&display=swap"
         rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
     <style>
         :root {
             --bg: #0a0a0f;
@@ -23,7 +25,7 @@
         * {
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
+            box-sizing: border-box
         }
 
         body {
@@ -31,65 +33,55 @@
             color: var(--text);
             font-family: 'DM Mono', monospace;
             min-height: 100vh;
-            overflow-x: hidden;
-        }
-
-        body::before {
-            content: '';
-            position: fixed;
-            inset: 0;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-            pointer-events: none;
-            z-index: 100;
-            opacity: 0.4;
+            overflow-x: hidden
         }
 
         .container {
             max-width: 860px;
             margin: 0 auto;
-            padding: 48px 24px;
+            padding: 48px 24px
         }
 
         header {
-            margin-bottom: 56px;
+            margin-bottom: 56px
         }
 
         .label {
             font-size: 10px;
-            letter-spacing: 0.2em;
+            letter-spacing: .2em;
             text-transform: uppercase;
             color: var(--accent);
             margin-bottom: 12px;
-            display: block;
+            display: block
         }
 
         h1 {
             font-family: 'Playfair Display', serif;
             font-size: clamp(36px, 6vw, 64px);
             line-height: 1.05;
-            font-weight: 700;
+            font-weight: 700
         }
 
         h1 em {
             font-style: italic;
-            color: var(--accent);
+            color: var(--accent)
         }
 
         .subtitle {
             margin-top: 16px;
             color: var(--muted);
             font-size: 12px;
-            letter-spacing: 0.05em;
-            line-height: 1.8;
+            letter-spacing: .05em;
+            line-height: 1.8
         }
 
-        /* ── Search ── */
+        /* Search */
         .search-section {
-            margin-bottom: 48px;
+            margin-bottom: 48px
         }
 
         .search-wrapper {
-            position: relative;
+            position: relative
         }
 
         .search-box {
@@ -98,13 +90,13 @@
             border-radius: 4px;
             overflow: visible;
             background: var(--surface);
-            transition: border-color 0.2s;
+            transition: border-color .2s;
             position: relative;
-            z-index: 10;
+            z-index: 10
         }
 
         .search-box:focus-within {
-            border-color: var(--accent);
+            border-color: var(--accent)
         }
 
         #movieInput {
@@ -116,12 +108,12 @@
             color: var(--text);
             font-family: 'DM Mono', monospace;
             font-size: 14px;
-            letter-spacing: 0.03em;
-            border-radius: 4px 0 0 4px;
+            letter-spacing: .03em;
+            border-radius: 4px 0 0 4px
         }
 
         #movieInput::placeholder {
-            color: var(--muted);
+            color: var(--muted)
         }
 
         #searchBtn {
@@ -133,27 +125,27 @@
             font-family: 'DM Mono', monospace;
             font-size: 11px;
             font-weight: 500;
-            letter-spacing: 0.15em;
+            letter-spacing: .15em;
             text-transform: uppercase;
-            transition: background 0.2s, transform 0.1s;
+            transition: background .2s, transform .1s;
             white-space: nowrap;
-            border-radius: 0 4px 4px 0;
+            border-radius: 0 4px 4px 0
         }
 
         #searchBtn:hover {
-            background: #f0d060;
+            background: #f0d060
         }
 
         #searchBtn:active {
-            transform: scale(0.97);
+            transform: scale(.97)
         }
 
         #searchBtn:disabled {
             background: var(--muted);
-            cursor: not-allowed;
+            cursor: not-allowed
         }
 
-        /* ── Autocomplete dropdown ── */
+        /* Autocomplete */
         .autocomplete-dropdown {
             position: absolute;
             top: calc(100% + 4px);
@@ -164,12 +156,12 @@
             border-radius: 4px;
             overflow: hidden;
             z-index: 999;
-            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
-            display: none;
+            box-shadow: 0 16px 40px rgba(0, 0, 0, .6);
+            display: none
         }
 
         .autocomplete-dropdown.open {
-            display: block;
+            display: block
         }
 
         .autocomplete-item {
@@ -178,29 +170,29 @@
             justify-content: space-between;
             padding: 12px 16px;
             cursor: pointer;
-            transition: background 0.12s;
+            transition: background .12s;
             border-bottom: 1px solid var(--border);
-            gap: 12px;
+            gap: 12px
         }
 
         .autocomplete-item:last-child {
-            border-bottom: none;
+            border-bottom: none
         }
 
         .autocomplete-item:hover,
         .autocomplete-item.active {
-            background: var(--surface3);
+            background: var(--surface3)
         }
 
         .autocomplete-item.active .ac-title {
-            color: var(--accent);
+            color: var(--accent)
         }
 
         .ac-left {
             display: flex;
             align-items: center;
             gap: 12px;
-            min-width: 0;
+            min-width: 0
         }
 
         .ac-icon {
@@ -212,7 +204,7 @@
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
-            font-size: 13px;
+            font-size: 13px
         }
 
         .ac-title {
@@ -221,32 +213,32 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            transition: color 0.12s;
+            transition: color .12s
         }
 
         .ac-title mark {
             background: transparent;
             color: var(--accent);
-            font-weight: 500;
+            font-weight: 500
         }
 
         .ac-year {
             font-size: 10px;
             color: var(--muted);
             flex-shrink: 0;
-            letter-spacing: 0.05em;
+            letter-spacing: .05em
         }
 
         .ac-hint {
             padding: 10px 16px;
             font-size: 10px;
             color: var(--muted);
-            letter-spacing: 0.1em;
+            letter-spacing: .1em;
             text-transform: uppercase;
             border-top: 1px solid var(--border);
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 8px
         }
 
         .ac-hint kbd {
@@ -256,7 +248,7 @@
             padding: 1px 5px;
             font-family: 'DM Mono', monospace;
             font-size: 9px;
-            color: var(--text);
+            color: var(--text)
         }
 
         .ac-empty {
@@ -264,7 +256,7 @@
             font-size: 12px;
             color: var(--muted);
             text-align: center;
-            letter-spacing: 0.05em;
+            letter-spacing: .05em
         }
 
         .ac-loading {
@@ -274,7 +266,7 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            letter-spacing: 0.08em;
+            letter-spacing: .08em
         }
 
         .ac-spinner {
@@ -283,21 +275,20 @@
             border: 1.5px solid var(--border);
             border-top-color: var(--accent);
             border-radius: 50%;
-            animation: spin 0.7s linear infinite;
-            flex-shrink: 0;
+            animation: spin .7s linear infinite;
+            flex-shrink: 0
         }
 
         @keyframes spin {
             to {
-                transform: rotate(360deg);
+                transform: rotate(360deg)
             }
         }
 
-        /* Suggestions */
         .suggestions {
             margin-top: 10px;
             font-size: 11px;
-            color: var(--muted);
+            color: var(--muted)
         }
 
         .suggestion-chip {
@@ -308,16 +299,15 @@
             padding: 4px 10px;
             margin: 4px 4px 0 0;
             cursor: pointer;
-            transition: border-color 0.15s, color 0.15s;
-            letter-spacing: 0.03em;
+            transition: border-color .15s, color .15s;
+            letter-spacing: .03em
         }
 
         .suggestion-chip:hover {
             border-color: var(--accent);
-            color: var(--accent);
+            color: var(--accent)
         }
 
-        /* Loading */
         .loading {
             display: none;
             align-items: center;
@@ -325,11 +315,11 @@
             padding: 32px 0;
             color: var(--muted);
             font-size: 12px;
-            letter-spacing: 0.1em;
+            letter-spacing: .1em
         }
 
         .loading.active {
-            display: flex;
+            display: flex
         }
 
         .spinner {
@@ -338,16 +328,16 @@
             border: 2px solid var(--border);
             border-top-color: var(--accent);
             border-radius: 50%;
-            animation: spin 0.8s linear infinite;
+            animation: spin .8s linear infinite
         }
 
         /* Results */
         #results {
-            display: none;
+            display: none
         }
 
         #results.active {
-            display: block;
+            display: block
         }
 
         .results-header {
@@ -356,25 +346,65 @@
             justify-content: space-between;
             margin-bottom: 24px;
             padding-bottom: 16px;
-            border-bottom: 1px solid var(--border);
+            border-bottom: 1px solid var(--border)
         }
 
         .results-title {
             font-family: 'Playfair Display', serif;
             font-size: 22px;
-            font-weight: 400;
+            font-weight: 400
         }
 
         .results-title span {
             font-style: italic;
-            color: var(--accent);
+            color: var(--accent)
         }
 
         .results-meta {
             font-size: 10px;
             color: var(--muted);
-            letter-spacing: 0.1em;
+            letter-spacing: .1em;
+            text-transform: uppercase
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 0;
+            margin-bottom: 28px;
+            border-bottom: 1px solid var(--border)
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            border-bottom: 2px solid transparent;
+            padding: 10px 20px;
+            font-family: 'DM Mono', monospace;
+            font-size: 11px;
+            letter-spacing: .12em;
             text-transform: uppercase;
+            color: var(--muted);
+            cursor: pointer;
+            transition: color .2s, border-color .2s;
+            margin-bottom: -1px
+        }
+
+        .tab-btn:hover {
+            color: var(--text)
+        }
+
+        .tab-btn.active {
+            color: var(--accent);
+            border-bottom-color: var(--accent)
+        }
+
+        .tab-panel {
+            display: none
+        }
+
+        .tab-panel.active {
+            display: block
         }
 
         .viz-section {
@@ -382,31 +412,31 @@
             border: 1px solid var(--border);
             border-radius: 4px;
             padding: 24px;
-            margin-bottom: 32px;
+            margin-bottom: 32px
         }
 
         .viz-label {
             font-size: 10px;
-            letter-spacing: 0.2em;
+            letter-spacing: .2em;
             text-transform: uppercase;
             color: var(--accent2);
             margin-bottom: 20px;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 8px
         }
 
         .viz-label::after {
             content: '';
             flex: 1;
             height: 1px;
-            background: var(--border);
+            background: var(--border)
         }
 
         .bar-chart {
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 10px
         }
 
         .bar-row {
@@ -416,12 +446,12 @@
             gap: 12px;
             opacity: 0;
             transform: translateX(-8px);
-            transition: opacity 0.4s, transform 0.4s;
+            transition: opacity .4s, transform .4s
         }
 
         .bar-row.visible {
             opacity: 1;
-            transform: translateX(0);
+            transform: translateX(0)
         }
 
         .bar-label {
@@ -430,14 +460,14 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            letter-spacing: 0.02em;
+            letter-spacing: .02em
         }
 
         .bar-track {
             height: 6px;
             background: var(--surface2);
             border-radius: 3px;
-            overflow: hidden;
+            overflow: hidden
         }
 
         .bar-fill {
@@ -445,38 +475,38 @@
             background: linear-gradient(90deg, var(--accent2), var(--accent));
             border-radius: 3px;
             width: 0%;
-            transition: width 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: width .7s cubic-bezier(.16, 1, .3, 1)
         }
 
         .bar-score {
             font-size: 11px;
             color: var(--accent);
             text-align: right;
-            font-weight: 500;
+            font-weight: 500
         }
 
         .cards-label {
             font-size: 10px;
-            letter-spacing: 0.2em;
+            letter-spacing: .2em;
             text-transform: uppercase;
             color: var(--muted);
             margin-bottom: 16px;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 8px
         }
 
         .cards-label::after {
             content: '';
             flex: 1;
             height: 1px;
-            background: var(--border);
+            background: var(--border)
         }
 
         .cards-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 12px;
+            gap: 12px
         }
 
         .movie-card {
@@ -487,45 +517,45 @@
             cursor: pointer;
             opacity: 0;
             transform: translateY(8px);
-            transition: opacity 0.35s, transform 0.35s, border-color 0.2s;
+            transition: opacity .35s, transform .35s, border-color .2s
         }
 
         .movie-card.visible {
             opacity: 1;
-            transform: translateY(0);
+            transform: translateY(0)
         }
 
         .movie-card:hover {
             border-color: var(--accent);
-            transform: translateY(-2px);
+            transform: translateY(-2px)
         }
 
         .card-rank {
             font-size: 10px;
             color: var(--muted);
-            letter-spacing: 0.1em;
-            margin-bottom: 8px;
+            letter-spacing: .1em;
+            margin-bottom: 8px
         }
 
         .card-title {
             font-family: 'Playfair Display', serif;
             font-size: 15px;
             line-height: 1.3;
-            margin-bottom: 8px;
+            margin-bottom: 8px
         }
 
         .card-genres {
             font-size: 10px;
             color: var(--muted);
-            letter-spacing: 0.05em;
+            letter-spacing: .05em;
             line-height: 1.6;
-            margin-bottom: 12px;
+            margin-bottom: 12px
         }
 
         .card-score {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 8px
         }
 
         .score-bar {
@@ -533,85 +563,269 @@
             height: 3px;
             background: var(--surface2);
             border-radius: 2px;
-            overflow: hidden;
+            overflow: hidden
         }
 
         .score-fill {
             height: 100%;
             background: linear-gradient(90deg, var(--accent2), var(--accent));
-            border-radius: 2px;
+            border-radius: 2px
         }
 
         .score-num {
             font-size: 10px;
             color: var(--accent);
+            font-weight: 500
+        }
+
+        /* TF-IDF panel */
+        .tfidf-section {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 24px;
+            margin-bottom: 32px
+        }
+
+        .movie-selector {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            flex-wrap: wrap
+        }
+
+        .chip {
+            padding: 6px 14px;
+            border-radius: 4px;
+            border: 1px solid var(--border);
+            background: var(--surface2);
+            font-size: 11px;
+            cursor: pointer;
+            color: var(--muted);
+            transition: border-color .15s, color .15s, background .15s;
+            font-family: 'DM Mono', monospace;
+            letter-spacing: .05em
+        }
+
+        .chip:hover {
+            border-color: var(--border-hover);
+            color: var(--text)
+        }
+
+        .chip.active {
+            background: rgba(124, 111, 255, 0.15);
+            border-color: var(--accent2);
+            color: var(--accent2)
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 20px
+        }
+
+        .metric {
+            background: var(--surface2);
+            border-radius: 4px;
+            padding: 12px 14px
+        }
+
+        .metric-label {
+            font-size: 10px;
+            color: var(--muted);
+            margin-bottom: 4px;
+            letter-spacing: .05em;
+            text-transform: uppercase
+        }
+
+        .metric-value {
+            font-size: 18px;
             font-weight: 500;
+            color: var(--text)
+        }
+
+        .controls {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            font-size: 11px;
+            color: var(--muted)
+        }
+
+        .filter-btns {
+            display: flex;
+            gap: 6px
+        }
+
+        .filter-btn {
+            padding: 4px 12px;
+            border-radius: 3px;
+            border: 1px solid var(--border);
+            background: transparent;
+            font-size: 10px;
+            cursor: pointer;
+            color: var(--muted);
+            transition: all .15s;
+            font-family: 'DM Mono', monospace;
+            letter-spacing: .08em;
+            text-transform: uppercase
+        }
+
+        .filter-btn:hover {
+            background: var(--surface2)
+        }
+
+        .filter-btn.active {
+            background: rgba(124, 111, 255, 0.15);
+            border-color: var(--accent2);
+            color: var(--accent2)
+        }
+
+        .chart-wrap {
+            position: relative;
+            width: 100%
+        }
+
+        .tfidf-tooltip {
+            position: absolute;
+            background: var(--surface2);
+            border: 1px solid var(--border-hover);
+            border-radius: 4px;
+            padding: 8px 12px;
+            font-size: 11px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity .15s;
+            z-index: 10;
+            max-width: 220px;
+            color: var(--text)
+        }
+
+        .tfidf-tooltip.visible {
+            opacity: 1
+        }
+
+        .tt-term {
+            font-weight: 500;
+            color: var(--accent);
+            margin-bottom: 2px
+        }
+
+        .tt-detail {
+            color: var(--muted);
+            line-height: 1.6
+        }
+
+        .explainer {
+            margin-top: 16px;
+            padding: 12px 16px;
+            background: var(--surface2);
+            border-radius: 4px;
+            border-left: 2px solid var(--accent2);
+            font-size: 11px;
+            color: var(--muted);
+            line-height: 1.8
+        }
+
+        .explainer strong {
+            color: var(--text);
+            font-weight: 500
+        }
+
+        .legend {
+            display: flex;
+            gap: 16px;
+            margin-top: 12px;
+            font-size: 11px;
+            color: var(--muted);
+            flex-wrap: wrap
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px
+        }
+
+        .legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 2px;
+            display: inline-block
         }
 
         .error-box {
             display: none;
-            background: rgba(239, 68, 68, 0.08);
-            border: 1px solid rgba(239, 68, 68, 0.3);
+            background: rgba(239, 68, 68, .08);
+            border: 1px solid rgba(239, 68, 68, .3);
             border-radius: 4px;
             padding: 16px 20px;
             font-size: 13px;
             color: #f87171;
-            letter-spacing: 0.03em;
+            letter-spacing: .03em
         }
 
         .error-box.active {
-            display: block;
+            display: block
         }
 
+        /* How it works */
         .how-section {
             margin-top: 64px;
             padding-top: 32px;
-            border-top: 1px solid var(--border);
+            border-top: 1px solid var(--border)
         }
 
         .how-title {
             font-size: 10px;
-            letter-spacing: 0.2em;
+            letter-spacing: .2em;
             text-transform: uppercase;
             color: var(--muted);
-            margin-bottom: 24px;
+            margin-bottom: 24px
         }
 
         .steps {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-            gap: 16px;
+            gap: 16px
         }
 
         .step {
             padding: 16px;
             background: var(--surface);
             border: 1px solid var(--border);
-            border-radius: 4px;
+            border-radius: 4px
         }
 
         .step-num {
             font-size: 28px;
             font-family: 'Playfair Display', serif;
             color: var(--accent);
-            opacity: 0.4;
+            opacity: .4;
             line-height: 1;
-            margin-bottom: 8px;
+            margin-bottom: 8px
         }
 
         .step-name {
             font-size: 11px;
             font-weight: 500;
             color: var(--text);
-            letter-spacing: 0.05em;
+            letter-spacing: .05em;
             margin-bottom: 6px;
-            text-transform: uppercase;
+            text-transform: uppercase
         }
 
         .step-desc {
             font-size: 11px;
             color: var(--muted);
-            line-height: 1.7;
+            line-height: 1.7
+        }
+
+        input[type=range] {
+            accent-color: var(--accent)
         }
     </style>
 </head>
@@ -622,10 +836,8 @@
         <header>
             <span class="label">// content-based recommender</span>
             <h1>Find your next<br><em>favourite film.</em></h1>
-            <p class="subtitle">
-                TF-IDF vectorization · Cosine similarity · MovieLens dataset<br>
-                Type a movie title and watch the ML model work in real time.
-            </p>
+            <p class="subtitle">TF-IDF vectorization · Cosine similarity · MovieLens dataset<br>Type a movie title and
+                watch the ML model work in real time.</p>
         </header>
 
         <section class="search-section">
@@ -634,13 +846,8 @@
                     <input type="text" id="movieInput" placeholder="Start typing a movie title..." autocomplete="off">
                     <button id="searchBtn" onclick="search()">Recommend →</button>
                 </div>
-
-                <!-- Autocomplete dropdown -->
-                <div class="autocomplete-dropdown" id="acDropdown">
-                    <!-- filled by JS -->
-                </div>
+                <div class="autocomplete-dropdown" id="acDropdown"></div>
             </div>
-
             <div class="suggestions">
                 Try:
                 <span class="suggestion-chip" onclick="selectMovie('Toy Story (1995)')">Toy Story (1995)</span>
@@ -652,10 +859,8 @@
         </section>
 
         <div class="loading" id="loading">
-            <div class="spinner"></div>
-            <span>Computing cosine similarities...</span>
+            <div class="spinner"></div><span>Computing cosine similarities...</span>
         </div>
-
         <div class="error-box" id="errorBox"></div>
 
         <div id="results">
@@ -663,12 +868,72 @@
                 <div class="results-title">Similar to <span id="queryTitle"></span></div>
                 <div class="results-meta" id="resultsMeta"></div>
             </div>
-            <div class="viz-section">
-                <div class="viz-label">Similarity scores — cosine distance from query vector</div>
-                <div class="bar-chart" id="barChart"></div>
+
+            <div class="tabs">
+                <button class="tab-btn active" onclick="switchTab('recs',this)">Recommendations</button>
+                <button class="tab-btn" onclick="switchTab('tfidf',this)">TF-IDF Weights</button>
             </div>
-            <div class="cards-label">Top recommendations</div>
-            <div class="cards-grid" id="cardsGrid"></div>
+
+            <!-- Recommendations tab -->
+            <div class="tab-panel active" id="tab-recs">
+                <div class="viz-section">
+                    <div class="viz-label">Similarity scores — cosine distance from query vector</div>
+                    <div class="bar-chart" id="barChart"></div>
+                </div>
+                <div class="cards-label">Top recommendations</div>
+                <div class="cards-grid" id="cardsGrid"></div>
+            </div>
+
+            <!-- TF-IDF tab -->
+            <div class="tab-panel" id="tab-tfidf">
+                <div class="tfidf-section">
+                    <div class="viz-label">TF-IDF feature weights</div>
+                    <div class="movie-selector" id="movieChips"></div>
+                    <div class="metrics-grid">
+                        <div class="metric">
+                            <div class="metric-label">Total features</div>
+                            <div class="metric-value" id="metricTotal">—</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-label">Top feature</div>
+                            <div class="metric-value" id="metricTop" style="font-size:13px;padding-top:4px;">—</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-label">Max weight</div>
+                            <div class="metric-value" id="metricMax">—</div>
+                        </div>
+                    </div>
+                    <div class="controls">
+                        <span>Show:</span>
+                        <div class="filter-btns">
+                            <button class="filter-btn active" onclick="setFilter('all',this)">All</button>
+                            <button class="filter-btn" onclick="setFilter('genre',this)">Genres</button>
+                            <button class="filter-btn" onclick="setFilter('tag',this)">Tags</button>
+                        </div>
+                        <label style="margin-left:auto;">Top
+                            <input type="range" min="5" max="30" value="15" step="1" id="topN"
+                                style="width:80px;vertical-align:middle;"
+                                oninput="document.getElementById('topNVal').textContent=this.value;renderTfidfChart()">
+                            <span id="topNVal">15</span>
+                        </label>
+                    </div>
+                    <div class="chart-wrap">
+                        <div id="tfidfTooltip" class="tfidf-tooltip">
+                            <div class="tt-term" id="ttTerm"></div>
+                            <div class="tt-detail" id="ttDetail"></div>
+                        </div>
+                        <div style="position:relative;" id="chartHeight"><canvas id="weightChart" role="img"
+                                aria-label="TF-IDF weights bar chart"></canvas></div>
+                    </div>
+                    <div class="explainer" id="explainer"></div>
+                    <div class="legend">
+                        <span class="legend-item"><span class="legend-dot" style="background:#534AB7"></span>Genre
+                            feature</span>
+                        <span class="legend-item"><span class="legend-dot" style="background:#0F6E56"></span>User
+                            tag</span>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div class="how-section">
@@ -677,8 +942,8 @@
                 <div class="step">
                     <div class="step-num">01</div>
                     <div class="step-name">Tokenize</div>
-                    <div class="step-desc">Movie genres are split into tokens. "Action|Thriller" → ["Action",
-                        "Thriller"]</div>
+                    <div class="step-desc">Movie genres are split into tokens. "Action|Thriller" → ["Action","Thriller"]
+                    </div>
                 </div>
                 <div class="step">
                     <div class="step-num">02</div>
@@ -710,19 +975,7 @@
     <script>
         const API_BASE = '';
 
-        // ── Mock movie list for demo (your real API returns this from /movies/search) ──
-        const MOCK_MOVIES = [
-            "Toy Story (1995)", "Jumanji (1995)", "GoodFellas (1990)", "Pulp Fiction (1994)",
-            "The Shawshank Redemption (1994)", "Forrest Gump (1994)", "The Silence of the Lambs (1991)",
-            "Schindler's List (1993)", "The Dark Knight (2008)", "Inception (2010)",
-            "Interstellar (2014)", "Fight Club (1999)", "The Matrix (1999)", "Goodfellas (1990)",
-            "The Godfather (1972)", "Se7en (1995)", "The Lord of the Rings (2001)",
-            "Star Wars (1977)", "Aliens (1986)", "Titanic (1997)", "Avatar (2009)",
-            "Saving Private Ryan (1998)", "Braveheart (1995)", "Gladiator (2000)",
-            "The Lion King (1994)", "Aladdin (1992)", "Finding Nemo (2003)", "Up (2009)",
-            "WALL-E (2008)", "Monsters, Inc. (2001)", "Toy Story 2 (1999)", "Shrek (2001)",
-            "Antz (1998)", "A Bug's Life (1998)", "Brave (2012)", "Frozen (2013)",
-        ];
+        const MOCK_MOVIES = ["Toy Story (1995)", "Jumanji (1995)", "GoodFellas (1990)", "Pulp Fiction (1994)", "The Shawshank Redemption (1994)", "Forrest Gump (1994)", "The Silence of the Lambs (1991)", "Schindler's List (1993)", "The Dark Knight (2008)", "Inception (2010)", "Interstellar (2014)", "Fight Club (1999)", "The Matrix (1999)", "Goodfellas (1990)", "The Godfather (1972)", "Se7en (1995)", "The Lord of the Rings (2001)", "Star Wars (1977)", "Aliens (1986)", "Titanic (1997)", "Avatar (2009)", "Saving Private Ryan (1998)", "Braveheart (1995)", "Gladiator (2000)", "The Lion King (1994)", "Aladdin (1992)", "Finding Nemo (2003)", "Up (2009)", "WALL-E (2008)", "Monsters, Inc. (2001)", "Toy Story 2 (1999)", "Shrek (2001)", "Antz (1998)", "A Bug's Life (1998)", "Brave (2012)", "Frozen (2013)"];
 
         const MOCK_RECS = {
             "Toy Story (1995)": [
@@ -751,11 +1004,14 @@
             ],
         };
 
-        // ── Autocomplete state ──────────────────────────────────────────
-        let acResults = [];
-        let acIndex = -1;
-        let acDebounce = null;
+        const MOCK_WEIGHTS = {
+            "Toy Story (1995)": [{ term: "animation", weight: 0.48, isGenre: true }, { term: "children", weight: 0.44, isGenre: true }, { term: "adventure", weight: 0.38, isGenre: true }, { term: "fantasy", weight: 0.35, isGenre: true }, { term: "comedy", weight: 0.31, isGenre: true }, { term: "pixar", weight: 0.29, isGenre: false }, { term: "tom hanks", weight: 0.26, isGenre: false }, { term: "buddy comedy", weight: 0.22, isGenre: false }, { term: "talking toys", weight: 0.20, isGenre: false }, { term: "feel good", weight: 0.18, isGenre: false }, { term: "family friendly", weight: 0.17, isGenre: false }, { term: "heartwarming", weight: 0.15, isGenre: false }, { term: "friendship", weight: 0.14, isGenre: false }, { term: "funny", weight: 0.12, isGenre: false }, { term: "classic", weight: 0.10, isGenre: false }],
+            "The Dark Knight (2008)": [{ term: "thriller", weight: 0.52, isGenre: true }, { term: "crime", weight: 0.47, isGenre: true }, { term: "action", weight: 0.41, isGenre: true }, { term: "drama", weight: 0.22, isGenre: true }, { term: "christopher nolan", weight: 0.38, isGenre: false }, { term: "heath ledger", weight: 0.35, isGenre: false }, { term: "joker", weight: 0.33, isGenre: false }, { term: "batman", weight: 0.31, isGenre: false }, { term: "dark", weight: 0.28, isGenre: false }, { term: "superhero", weight: 0.24, isGenre: false }, { term: "psychological", weight: 0.21, isGenre: false }, { term: "epic", weight: 0.18, isGenre: false }, { term: "masterpiece", weight: 0.16, isGenre: false }, { term: "comic book", weight: 0.14, isGenre: false }, { term: "villain", weight: 0.12, isGenre: false }],
+            "Inception (2010)": [{ term: "sci-fi", weight: 0.51, isGenre: true }, { term: "thriller", weight: 0.44, isGenre: true }, { term: "action", weight: 0.38, isGenre: true }, { term: "mystery", weight: 0.30, isGenre: true }, { term: "christopher nolan", weight: 0.42, isGenre: false }, { term: "mind-bending", weight: 0.38, isGenre: false }, { term: "dreams", weight: 0.35, isGenre: false }, { term: "leonardo dicaprio", weight: 0.30, isGenre: false }, { term: "thought-provoking", weight: 0.27, isGenre: false }, { term: "complex", weight: 0.24, isGenre: false }, { term: "heist", weight: 0.20, isGenre: false }, { term: "surreal", weight: 0.18, isGenre: false }, { term: "visually stunning", weight: 0.15, isGenre: false }, { term: "dark", weight: 0.13, isGenre: false }, { term: "epic", weight: 0.11, isGenre: false }],
+        };
 
+        // ── Autocomplete ──
+        let acResults = [], acIndex = -1, acDebounce = null;
         const input = document.getElementById('movieInput');
         const dropdown = document.getElementById('acDropdown');
 
@@ -765,216 +1021,159 @@
             if (q.length < 2) { closeDropdown(); return; }
             acDebounce = setTimeout(() => fetchSuggestions(q), 180);
         });
-
-        input.addEventListener('keydown', (e) => {
-            if (!dropdown.classList.contains('open')) {
-                if (e.key === 'Enter') search();
-                return;
-            }
-            if (e.key === 'ArrowDown') {
-                e.preventDefault();
-                acIndex = Math.min(acIndex + 1, acResults.length - 1);
-                renderHighlight();
-            } else if (e.key === 'ArrowUp') {
-                e.preventDefault();
-                acIndex = Math.max(acIndex - 1, -1);
-                renderHighlight();
-            } else if (e.key === 'Enter') {
-                e.preventDefault();
-                if (acIndex >= 0 && acResults[acIndex]) {
-                    selectMovie(acResults[acIndex]);
-                } else {
-                    closeDropdown();
-                    search();
-                }
-            } else if (e.key === 'Escape') {
-                closeDropdown();
-            }
+        input.addEventListener('keydown', e => {
+            if (!dropdown.classList.contains('open')) { if (e.key === 'Enter') search(); return; }
+            if (e.key === 'ArrowDown') { e.preventDefault(); acIndex = Math.min(acIndex + 1, acResults.length - 1); renderHighlight(); }
+            else if (e.key === 'ArrowUp') { e.preventDefault(); acIndex = Math.max(acIndex - 1, -1); renderHighlight(); }
+            else if (e.key === 'Enter') { e.preventDefault(); if (acIndex >= 0 && acResults[acIndex]) selectMovie(acResults[acIndex]); else { closeDropdown(); search(); } }
+            else if (e.key === 'Escape') closeDropdown();
         });
-
-        // Close dropdown when clicking outside
-        document.addEventListener('click', (e) => {
-            if (!e.target.closest('.search-wrapper')) closeDropdown();
-        });
+        document.addEventListener('click', e => { if (!e.target.closest('.search-wrapper')) closeDropdown(); });
 
         async function fetchSuggestions(q) {
             showAcLoading();
             let results;
-            try {
-                const res = await fetch(`${API_BASE}/movies/search?q=${encodeURIComponent(q)}`);
-                if (!res.ok) throw new Error();
-                const data = await res.json();
-                results = data.results;
-            } catch {
-                // Fall back to mock filtering
-                results = MOCK_MOVIES
-                    .filter(m => m.toLowerCase().includes(q.toLowerCase()))
-                    .slice(0, 8);
-            }
-            acResults = results;
-            acIndex = -1;
-            renderDropdown(q, results);
+            try { const res = await fetch(`${API_BASE}/movies/search?q=${encodeURIComponent(q)}`); if (!res.ok) throw new Error(); const d = await res.json(); results = d.results; }
+            catch { results = MOCK_MOVIES.filter(m => m.toLowerCase().includes(q.toLowerCase())).slice(0, 8); }
+            acResults = results; acIndex = -1; renderDropdown(q, results);
         }
-
-        function showAcLoading() {
-            dropdown.innerHTML = `<div class="ac-loading"><div class="ac-spinner"></div>Searching titles...</div>`;
-            dropdown.classList.add('open');
-        }
-
+        function showAcLoading() { dropdown.innerHTML = `<div class="ac-loading"><div class="ac-spinner"></div>Searching titles...</div>`; dropdown.classList.add('open'); }
         function renderDropdown(q, results) {
-            if (!results.length) {
-                dropdown.innerHTML = `<div class="ac-empty">No movies found for "${q}"</div>`;
-                dropdown.classList.add('open');
-                return;
-            }
-
-            const items = results.map((title, i) => {
-                const yearMatch = title.match(/\((\d{4})\)$/);
-                const year = yearMatch ? yearMatch[1] : '';
-                const name = title.replace(/ \(\d{4}\)$/, '');
-                const highlighted = name.replace(
-                    new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi'),
-                    '<mark>$1</mark>'
-                );
-                const emoji = getGenreEmoji(title);
-                return `
-      <div class="autocomplete-item" data-index="${i}" onmousedown="selectMovie('${title.replace(/'/g, "\\'")}')">
-        <div class="ac-left">
-          <div class="ac-icon">${emoji}</div>
-          <div class="ac-title">${highlighted}</div>
-        </div>
-        <div class="ac-year">${year}</div>
-      </div>
-    `;
+            if (!results.length) { dropdown.innerHTML = `<div class="ac-empty">No movies found for "${q}"</div>`; dropdown.classList.add('open'); return; }
+            const items = results.map((t, i) => {
+                const yr = (t.match(/\((\d{4})\)$/) || [])[1] || '';
+                const name = t.replace(/ \(\d{4}\)$/, '');
+                const hi = name.replace(new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})','gi`), '<mark>$1</mark>');
+                return `<div class="autocomplete-item" data-index="${i}" onmousedown="selectMovie('${t.replace(/'/g, "\\'")}')"><div class="ac-left"><div class="ac-icon">${getEmoji(t)}</div><div class="ac-title">${hi}</div></div><div class="ac-year">${yr}</div></div>`;
             }).join('');
-
-            dropdown.innerHTML = items + `
-    <div class="ac-hint">
-      <kbd>↑</kbd><kbd>↓</kbd> navigate &nbsp;·&nbsp; <kbd>↵</kbd> select &nbsp;·&nbsp; <kbd>esc</kbd> close
-    </div>
-  `;
+            dropdown.innerHTML = items + `<div class="ac-hint"><kbd>↑</kbd><kbd>↓</kbd> navigate · <kbd>↵</kbd> select · <kbd>esc</kbd> close</div>`;
             dropdown.classList.add('open');
         }
+        function renderHighlight() { dropdown.querySelectorAll('.autocomplete-item').forEach((el, i) => el.classList.toggle('active', i === acIndex)); }
+        function closeDropdown() { dropdown.classList.remove('open'); acIndex = -1; acResults = []; }
+        function selectMovie(t) { input.value = t; closeDropdown(); search(); }
+        function getEmoji(t) { t = t.toLowerCase(); if (t.includes('toy') || t.includes('nemo') || t.includes('shrek') || t.includes('lion')) return '🎬'; if (t.includes('dark') || t.includes('batman') || t.includes('joker')) return '🦇'; if (t.includes('star') || t.includes('matrix') || t.includes('inception') || t.includes('inter')) return '🚀'; if (t.includes('god') || t.includes('pulp') || t.includes('goodfel')) return '🎭'; if (t.includes('lord') || t.includes('hobbit') || t.includes('harry')) return '⚔️'; return '🎞️'; }
 
-        function renderHighlight() {
-            dropdown.querySelectorAll('.autocomplete-item').forEach((el, i) => {
-                el.classList.toggle('active', i === acIndex);
-            });
+        // ── Tab switching ──
+        function switchTab(id, btn) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById('tab-' + id).classList.add('active');
+            if (id === 'tfidf' && currentMovie) loadTfidf(currentMovie);
         }
 
-        function closeDropdown() {
-            dropdown.classList.remove('open');
-            acIndex = -1;
-            acResults = [];
-        }
-
-        function selectMovie(title) {
-            input.value = title;
-            closeDropdown();
-            search();
-        }
-
-        // Little genre → emoji mapper for visual flair
-        function getGenreEmoji(title) {
-            const t = title.toLowerCase();
-            if (t.includes('toy') || t.includes('nemo') || t.includes('shrek') || t.includes('lion')) return '🎬';
-            if (t.includes('dark') || t.includes('batman') || t.includes('joker')) return '🦇';
-            if (t.includes('star') || t.includes('matrix') || t.includes('inception') || t.includes('inter')) return '🚀';
-            if (t.includes('god') || t.includes('pulp') || t.includes('goodfel')) return '🎭';
-            if (t.includes('lord') || t.includes('hobbit') || t.includes('harry')) return '⚔️';
-            return '🎞️';
-        }
-
-        // ── Main search ────────────────────────────────────────────────
+        // ── Main search ──
+        let currentMovie = null;
         function showLoading(v) { document.getElementById('loading').classList.toggle('active', v); }
-        function showError(msg) {
-            const el = document.getElementById('errorBox');
-            el.textContent = msg;
-            el.classList.toggle('active', !!msg);
-        }
+        function showError(msg) { const el = document.getElementById('errorBox'); el.textContent = msg; el.classList.toggle('active', !!msg); }
         function showResults(v) { document.getElementById('results').classList.toggle('active', v); }
 
         async function search() {
-            const title = input.value.trim();
-            if (!title) return;
-            closeDropdown();
-            showError('');
-            showResults(false);
-            showLoading(true);
+            const title = input.value.trim(); if (!title) return;
+            closeDropdown(); showError(''); showResults(false); showLoading(true);
             document.getElementById('searchBtn').disabled = true;
-
             let data;
-            try {
-                const res = await fetch(`${API_BASE}/recommend/${encodeURIComponent(title)}?n=10`);
-                if (!res.ok) throw new Error(`${res.status}`);
-                const json = await res.json();
-                data = json.recommendations;
-            } catch {
-                const key = Object.keys(MOCK_RECS).find(k => k.toLowerCase() === title.toLowerCase());
-                if (key) {
-                    data = MOCK_RECS[key];
-                } else {
-                    showLoading(false);
-                    document.getElementById('searchBtn').disabled = false;
-                    showError(`Movie not found. Try using the autocomplete to pick an exact title.`);
-                    return;
-                }
-            }
-
-            showLoading(false);
-            document.getElementById('searchBtn').disabled = false;
+            try { const res = await fetch(`${API_BASE}/recommend/${encodeURIComponent(title)}?n=10`); if (!res.ok) throw new Error(); const j = await res.json(); data = j.recommendations; }
+            catch { const k = Object.keys(MOCK_RECS).find(k => k.toLowerCase() === title.toLowerCase()); if (k) data = MOCK_RECS[k]; else { showLoading(false); document.getElementById('searchBtn').disabled = false; showError('Movie not found. Try using the autocomplete to pick an exact title.'); return; } }
+            showLoading(false); document.getElementById('searchBtn').disabled = false;
+            currentMovie = title;
             renderResults(title, data);
+            buildTfidfChips(title);
+            loadTfidf(title);
         }
 
         function renderResults(query, recs) {
             document.getElementById('queryTitle').textContent = query;
             document.getElementById('resultsMeta').textContent = `${recs.length} results`;
-
-            const chart = document.getElementById('barChart');
-            chart.innerHTML = '';
+            const chart = document.getElementById('barChart'); chart.innerHTML = '';
             recs.forEach((r, i) => {
                 const pct = (r.similarity * 100).toFixed(1);
-                const row = document.createElement('div');
-                row.className = 'bar-row';
-                row.innerHTML = `
-      <div class="bar-label" title="${r.title}">${r.title.replace(/ \(\d{4}\)/, '')}</div>
-      <div class="bar-track"><div class="bar-fill" data-target="${pct}%"></div></div>
-      <div class="bar-score">${pct}%</div>
-    `;
+                const row = document.createElement('div'); row.className = 'bar-row';
+                row.innerHTML = `<div class="bar-label" title="${r.title}">${r.title.replace(/ \(\d{4}\)/, '')}</div><div class="bar-track"><div class="bar-fill" data-target="${pct}%"></div></div><div class="bar-score">${pct}%</div>`;
                 chart.appendChild(row);
-                setTimeout(() => {
-                    row.classList.add('visible');
-                    row.querySelector('.bar-fill').style.width = pct + '%';
-                }, i * 60);
+                setTimeout(() => { row.classList.add('visible'); row.querySelector('.bar-fill').style.width = pct + '%'; }, i * 60);
             });
-
-            const grid = document.getElementById('cardsGrid');
-            grid.innerHTML = '';
+            const grid = document.getElementById('cardsGrid'); grid.innerHTML = '';
             recs.forEach((r, i) => {
-                const card = document.createElement('div');
-                card.className = 'movie-card';
-                card.onclick = () => selectMovie(r.title);
-                const genres = r.genres.replace(/\|/g, ' · ');
-                const pct = (r.similarity * 100).toFixed(0);
-                card.innerHTML = `
-      <div class="card-rank">#${String(i + 1).padStart(2, '0')}</div>
-      <div class="card-title">${r.title}</div>
-      <div class="card-genres">${genres}</div>
-      <div class="card-score">
-        <div class="score-bar"><div class="score-fill" style="width:${pct}%"></div></div>
-        <div class="score-num">${pct}%</div>
-      </div>
-    `;
-                grid.appendChild(card);
-                setTimeout(() => card.classList.add('visible'), i * 50 + 200);
+                const card = document.createElement('div'); card.className = 'movie-card'; card.onclick = () => selectMovie(r.title);
+                const genres = r.genres.replace(/\|/g, ' · '); const pct = (r.similarity * 100).toFixed(0);
+                card.innerHTML = `<div class="card-rank">#${String(i + 1).padStart(2, '0')}</div><div class="card-title">${r.title}</div><div class="card-genres">${genres}</div><div class="card-score"><div class="score-bar"><div class="score-fill" style="width:${pct}%"></div></div><div class="score-num">${pct}%</div></div>`;
+                grid.appendChild(card); setTimeout(() => card.classList.add('visible'), i * 50 + 200);
             });
-
             showResults(true);
             document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
+
+        // ── TF-IDF section ──
+        let tfidfData = [], tfidfFilter = 'all', tfidfChart = null, activeTfidfMovie = null;
+
+        function buildTfidfChips(activeTitle) {
+            const wrap = document.getElementById('movieChips'); wrap.innerHTML = '';
+            const movies = Object.keys(MOCK_WEIGHTS);
+            movies.forEach(m => {
+                const btn = document.createElement('button'); btn.className = 'chip';
+                btn.textContent = m.replace(/ \(\d{4}\)/, '');
+                if (m === activeTitle) btn.classList.add('active');
+                btn.onclick = () => { document.querySelectorAll('#movieChips .chip').forEach(c => c.classList.remove('active')); btn.classList.add('active'); loadTfidf(m); };
+                wrap.appendChild(btn);
+            });
+            if (!movies.includes(activeTitle)) {
+                const btn = document.createElement('button'); btn.className = 'chip active';
+                btn.textContent = activeTitle.replace(/ \(\d{4}\)/, ''); wrap.prepend(btn);
+            }
+        }
+
+        async function loadTfidf(title) {
+            activeTfidfMovie = title;
+            let weights;
+            try { const res = await fetch(`${API_BASE}/weights/${encodeURIComponent(title)}?top_n=30`); if (!res.ok) throw new Error(); const j = await res.json(); weights = j.weights.map(w => ({ term: w.term, weight: w.weight, isGenre: isGenre(w.term) })); }
+            catch { const k = Object.keys(MOCK_WEIGHTS).find(k => k.toLowerCase() === title.toLowerCase()) || Object.keys(MOCK_WEIGHTS)[0]; weights = MOCK_WEIGHTS[k] || MOCK_WEIGHTS[Object.keys(MOCK_WEIGHTS)[0]]; }
+            tfidfData = weights; updateMetrics(weights, title); renderTfidfChart();
+        }
+
+        function isGenre(t) { const GENRES = new Set(['action', 'adventure', 'animation', 'children', 'comedy', 'crime', 'documentary', 'drama', 'fantasy', 'film-noir', 'horror', 'musical', 'mystery', 'romance', 'sci-fi', 'thriller', 'war', 'western', 'imax']); return GENRES.has(t.toLowerCase()); }
+
+        function updateMetrics(data, title) {
+            document.getElementById('metricTotal').textContent = data.length;
+            document.getElementById('metricTop').textContent = data[0]?.term || '—';
+            document.getElementById('metricMax').textContent = data[0]?.weight.toFixed(3) || '—';
+            const gc = data.filter(d => d.isGenre).length;
+            document.getElementById('explainer').innerHTML = `<strong>${title.replace(/ \(\d{4}\)/, '')}</strong> has <strong>${gc} genre features</strong> and <strong>${data.length - gc} tag features</strong>. The highest-weighted term is <strong>${data[0]?.term}</strong> (${data[0]?.weight.toFixed(3)}), meaning it's the most distinctive signal pulling this movie toward similar ones. Genres are boosted (appear twice in the soup) so they generally outweigh individual tags.`;
+        }
+
+        function setFilter(f, el) { tfidfFilter = f; document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active')); el.classList.add('active'); renderTfidfChart(); }
+
+        function renderTfidfChart() {
+            const topN = parseInt(document.getElementById('topN').value);
+            let data = tfidfData;
+            if (tfidfFilter === 'genre') data = data.filter(d => d.isGenre);
+            else if (tfidfFilter === 'tag') data = data.filter(d => !d.isGenre);
+            data = data.slice(0, topN);
+            const wrap = document.getElementById('chartHeight');
+            wrap.style.height = Math.max(200, data.length * 38 + 60) + 'px';
+            if (tfidfChart) tfidfChart.destroy();
+            tfidfChart = new Chart(document.getElementById('weightChart'), {
+                type: 'bar',
+                data: { labels: data.map(d => d.term), datasets: [{ label: 'TF-IDF weight', data: data.map(d => d.weight), backgroundColor: data.map(d => d.isGenre ? '#534AB7' : '#0F6E56'), borderColor: data.map(d => d.isGenre ? '#3C3489' : '#085041'), borderWidth: 0.5, borderRadius: 3 }] },
+                options: {
+                    indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { enabled: false } },
+                    scales: { x: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.07)' }, ticks: { font: { size: 11 }, color: '#6b6880', callback: v => v.toFixed(2) }, title: { display: true, text: 'TF-IDF weight (higher = more distinctive)', font: { size: 11 }, color: '#6b6880' } }, y: { grid: { display: false }, ticks: { font: { size: 12 }, color: '#aaa' } } },
+                    onHover: (event, elements) => {
+                        const tt = document.getElementById('tfidfTooltip');
+                        if (!elements.length) { tt.classList.remove('visible'); return; }
+                        const d = data[elements[0].index];
+                        document.getElementById('ttTerm').textContent = d.term;
+                        document.getElementById('ttDetail').innerHTML = `Weight: <strong>${d.weight.toFixed(4)}</strong><br>Type: <strong>${d.isGenre ? 'Genre (boosted ×2)' : 'User tag'}</strong><br>Impact: <strong>${d.weight > 0.35 ? 'High' : d.weight > 0.2 ? 'Medium' : 'Low'}</strong>`;
+                        const rect = event.native.target.getBoundingClientRect();
+                        tt.style.left = (event.native.clientX - rect.left + 12) + 'px';
+                        tt.style.top = (event.native.clientY - rect.top - 10) + 'px';
+                        tt.classList.add('visible');
+                    }
+                }
+            });
+        }
     </script>
-
-
 </body>
 
 </html>
