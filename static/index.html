@@ -11,12 +11,13 @@
             --bg: #0a0a0f;
             --surface: #111118;
             --surface2: #1a1a26;
+            --surface3: #22223a;
             --border: rgba(255, 255, 255, 0.08);
+            --border-hover: rgba(255, 255, 255, 0.18);
             --accent: #e8c547;
             --accent2: #7c6fff;
             --text: #f0ede8;
             --muted: #6b6880;
-            --success: #4ade80;
         }
 
         * {
@@ -33,7 +34,6 @@
             overflow-x: hidden;
         }
 
-        /* Grain overlay */
         body::before {
             content: '';
             position: fixed;
@@ -50,10 +50,8 @@
             padding: 48px 24px;
         }
 
-        /* Header */
         header {
             margin-bottom: 56px;
-            position: relative;
         }
 
         .label {
@@ -70,7 +68,6 @@
             font-size: clamp(36px, 6vw, 64px);
             line-height: 1.05;
             font-weight: 700;
-            color: var(--text);
         }
 
         h1 em {
@@ -86,19 +83,24 @@
             line-height: 1.8;
         }
 
-        /* Search */
+        /* ── Search ── */
         .search-section {
             margin-bottom: 48px;
         }
 
+        .search-wrapper {
+            position: relative;
+        }
+
         .search-box {
             display: flex;
-            gap: 0;
             border: 1px solid var(--border);
             border-radius: 4px;
-            overflow: hidden;
+            overflow: visible;
             background: var(--surface);
             transition: border-color 0.2s;
+            position: relative;
+            z-index: 10;
         }
 
         .search-box:focus-within {
@@ -115,6 +117,7 @@
             font-family: 'DM Mono', monospace;
             font-size: 14px;
             letter-spacing: 0.03em;
+            border-radius: 4px 0 0 4px;
         }
 
         #movieInput::placeholder {
@@ -133,6 +136,8 @@
             letter-spacing: 0.15em;
             text-transform: uppercase;
             transition: background 0.2s, transform 0.1s;
+            white-space: nowrap;
+            border-radius: 0 4px 4px 0;
         }
 
         #searchBtn:hover {
@@ -148,9 +153,149 @@
             cursor: not-allowed;
         }
 
+        /* ── Autocomplete dropdown ── */
+        .autocomplete-dropdown {
+            position: absolute;
+            top: calc(100% + 4px);
+            left: 0;
+            right: 0;
+            background: var(--surface2);
+            border: 1px solid var(--border-hover);
+            border-radius: 4px;
+            overflow: hidden;
+            z-index: 999;
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
+            display: none;
+        }
+
+        .autocomplete-dropdown.open {
+            display: block;
+        }
+
+        .autocomplete-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            cursor: pointer;
+            transition: background 0.12s;
+            border-bottom: 1px solid var(--border);
+            gap: 12px;
+        }
+
+        .autocomplete-item:last-child {
+            border-bottom: none;
+        }
+
+        .autocomplete-item:hover,
+        .autocomplete-item.active {
+            background: var(--surface3);
+        }
+
+        .autocomplete-item.active .ac-title {
+            color: var(--accent);
+        }
+
+        .ac-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 0;
+        }
+
+        .ac-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 3px;
+            background: var(--surface3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 13px;
+        }
+
+        .ac-title {
+            font-size: 13px;
+            color: var(--text);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            transition: color 0.12s;
+        }
+
+        .ac-title mark {
+            background: transparent;
+            color: var(--accent);
+            font-weight: 500;
+        }
+
+        .ac-year {
+            font-size: 10px;
+            color: var(--muted);
+            flex-shrink: 0;
+            letter-spacing: 0.05em;
+        }
+
+        .ac-hint {
+            padding: 10px 16px;
+            font-size: 10px;
+            color: var(--muted);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            border-top: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .ac-hint kbd {
+            background: var(--surface3);
+            border: 1px solid var(--border-hover);
+            border-radius: 3px;
+            padding: 1px 5px;
+            font-family: 'DM Mono', monospace;
+            font-size: 9px;
+            color: var(--text);
+        }
+
+        .ac-empty {
+            padding: 16px;
+            font-size: 12px;
+            color: var(--muted);
+            text-align: center;
+            letter-spacing: 0.05em;
+        }
+
+        .ac-loading {
+            padding: 14px 16px;
+            font-size: 11px;
+            color: var(--muted);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            letter-spacing: 0.08em;
+        }
+
+        .ac-spinner {
+            width: 12px;
+            height: 12px;
+            border: 1.5px solid var(--border);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+            flex-shrink: 0;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
         /* Suggestions */
         .suggestions {
-            margin-top: 8px;
+            margin-top: 10px;
             font-size: 11px;
             color: var(--muted);
         }
@@ -196,12 +341,6 @@
             animation: spin 0.8s linear infinite;
         }
 
-        @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
-        }
-
         /* Results */
         #results {
             display: none;
@@ -238,7 +377,6 @@
             text-transform: uppercase;
         }
 
-        /* Viz section */
         .viz-section {
             background: var(--surface);
             border: 1px solid var(--border);
@@ -317,7 +455,6 @@
             font-weight: 500;
         }
 
-        /* Movie cards grid */
         .cards-label {
             font-size: 10px;
             letter-spacing: 0.2em;
@@ -348,7 +485,6 @@
             border-radius: 4px;
             padding: 16px;
             cursor: pointer;
-            transition: border-color 0.2s, transform 0.2s;
             opacity: 0;
             transform: translateY(8px);
             transition: opacity 0.35s, transform 0.35s, border-color 0.2s;
@@ -376,7 +512,6 @@
             font-size: 15px;
             line-height: 1.3;
             margin-bottom: 8px;
-            color: var(--text);
         }
 
         .card-genres {
@@ -413,7 +548,6 @@
             font-weight: 500;
         }
 
-        /* Error */
         .error-box {
             display: none;
             background: rgba(239, 68, 68, 0.08);
@@ -429,7 +563,6 @@
             display: block;
         }
 
-        /* HOW IT WORKS section */
         .how-section {
             margin-top: 64px;
             padding-top: 32px;
@@ -496,16 +629,25 @@
         </header>
 
         <section class="search-section">
-            <div class="search-box">
-                <input type="text" id="movieInput" placeholder="e.g. Toy Story (1995)" autocomplete="off">
-                <button id="searchBtn" onclick="search()">Recommend →</button>
+            <div class="search-wrapper">
+                <div class="search-box">
+                    <input type="text" id="movieInput" placeholder="Start typing a movie title..." autocomplete="off">
+                    <button id="searchBtn" onclick="search()">Recommend →</button>
+                </div>
+
+                <!-- Autocomplete dropdown -->
+                <div class="autocomplete-dropdown" id="acDropdown">
+                    <!-- filled by JS -->
+                </div>
             </div>
+
             <div class="suggestions">
                 Try:
-                <span class="suggestion-chip" onclick="setMovie('Toy Story (1995)')">Toy Story (1995)</span>
-                <span class="suggestion-chip" onclick="setMovie('The Dark Knight (2008)')">The Dark Knight (2008)</span>
-                <span class="suggestion-chip" onclick="setMovie('Inception (2010)')">Inception (2010)</span>
-                <span class="suggestion-chip" onclick="setMovie('Pulp Fiction (1994)')">Pulp Fiction (1994)</span>
+                <span class="suggestion-chip" onclick="selectMovie('Toy Story (1995)')">Toy Story (1995)</span>
+                <span class="suggestion-chip" onclick="selectMovie('The Dark Knight (2008)')">The Dark Knight
+                    (2008)</span>
+                <span class="suggestion-chip" onclick="selectMovie('Inception (2010)')">Inception (2010)</span>
+                <span class="suggestion-chip" onclick="selectMovie('Pulp Fiction (1994)')">Pulp Fiction (1994)</span>
             </div>
         </section>
 
@@ -521,19 +663,14 @@
                 <div class="results-title">Similar to <span id="queryTitle"></span></div>
                 <div class="results-meta" id="resultsMeta"></div>
             </div>
-
-            <!-- ML Visualization -->
             <div class="viz-section">
                 <div class="viz-label">Similarity scores — cosine distance from query vector</div>
                 <div class="bar-chart" id="barChart"></div>
             </div>
-
-            <!-- Cards -->
             <div class="cards-label">Top recommendations</div>
             <div class="cards-grid" id="cardsGrid"></div>
         </div>
 
-        <!-- How it works -->
         <div class="how-section">
             <div class="how-title">// how it works</div>
             <div class="steps">
@@ -571,63 +708,196 @@
     </div>
 
     <script>
-        // ─── CONFIG ───────────────────────────────────────────────────
-        // Change this to your Render URL once deployed
         const API_BASE = '';
 
-        // ─── MOCK DATA for demo (remove once API is live) ─────────────
-        const MOCK = {
+        // ── Mock movie list for demo (your real API returns this from /movies/search) ──
+        const MOCK_MOVIES = [
+            "Toy Story (1995)", "Jumanji (1995)", "GoodFellas (1990)", "Pulp Fiction (1994)",
+            "The Shawshank Redemption (1994)", "Forrest Gump (1994)", "The Silence of the Lambs (1991)",
+            "Schindler's List (1993)", "The Dark Knight (2008)", "Inception (2010)",
+            "Interstellar (2014)", "Fight Club (1999)", "The Matrix (1999)", "Goodfellas (1990)",
+            "The Godfather (1972)", "Se7en (1995)", "The Lord of the Rings (2001)",
+            "Star Wars (1977)", "Aliens (1986)", "Titanic (1997)", "Avatar (2009)",
+            "Saving Private Ryan (1998)", "Braveheart (1995)", "Gladiator (2000)",
+            "The Lion King (1994)", "Aladdin (1992)", "Finding Nemo (2003)", "Up (2009)",
+            "WALL-E (2008)", "Monsters, Inc. (2001)", "Toy Story 2 (1999)", "Shrek (2001)",
+            "Antz (1998)", "A Bug's Life (1998)", "Brave (2012)", "Frozen (2013)",
+        ];
+
+        const MOCK_RECS = {
             "Toy Story (1995)": [
-                { title: "Antz (1998)", genres: "Adventure|Animation|Children|Comedy|Fantasy", similarity: 0.9502 },
-                { title: "Monsters, Inc. (2001)", genres: "Adventure|Animation|Children|Comedy|Fantasy", similarity: 0.9502 },
-                { title: "Shrek (2001)", genres: "Adventure|Animation|Children|Comedy|Fantasy|Romance", similarity: 0.8912 },
-                { title: "A Bug's Life (1998)", genres: "Adventure|Animation|Children|Comedy", similarity: 0.8741 },
-                { title: "Toy Story 2 (1999)", genres: "Adventure|Animation|Children|Comedy|Fantasy", similarity: 0.9502 },
-                { title: "Finding Nemo (2003)", genres: "Adventure|Animation|Children|Comedy", similarity: 0.8741 },
-                { title: "The Lion King (1994)", genres: "Adventure|Animation|Children|Drama|Musical|IMAX", similarity: 0.7203 },
-                { title: "Aladdin (1992)", genres: "Adventure|Animation|Children|Comedy|Musical|Romance", similarity: 0.7104 },
-                { title: "Brave (2012)", genres: "Action|Adventure|Animation|Children|Comedy|Fantasy", similarity: 0.8102 },
-                { title: "Up (2009)", genres: "Adventure|Animation|Children|Drama", similarity: 0.7901 },
+                { title: "Antz (1998)", genres: "Adventure|Animation|Children|Comedy|Fantasy", similarity: 0.8821 },
+                { title: "Monsters, Inc. (2001)", genres: "Adventure|Animation|Children|Comedy|Fantasy", similarity: 0.8634 },
+                { title: "A Bug's Life (1998)", genres: "Adventure|Animation|Children|Comedy", similarity: 0.8401 },
+                { title: "Toy Story 2 (1999)", genres: "Adventure|Animation|Children|Comedy|Fantasy", similarity: 0.8634 },
+                { title: "Finding Nemo (2003)", genres: "Adventure|Animation|Children|Comedy", similarity: 0.8112 },
+                { title: "Shrek (2001)", genres: "Adventure|Animation|Children|Comedy|Fantasy|Romance", similarity: 0.7923 },
+                { title: "Up (2009)", genres: "Adventure|Animation|Children|Drama", similarity: 0.7601 },
+                { title: "Brave (2012)", genres: "Action|Adventure|Animation|Children|Comedy|Fantasy", similarity: 0.7488 },
+                { title: "The Lion King (1994)", genres: "Adventure|Animation|Children|Drama|Musical", similarity: 0.7103 },
+                { title: "Aladdin (1992)", genres: "Adventure|Animation|Children|Comedy|Musical|Romance", similarity: 0.6892 },
             ],
             "The Dark Knight (2008)": [
-                { title: "Batman Begins (2005)", genres: "Action|Crime|Drama|Thriller", similarity: 0.9810 },
-                { title: "Heat (1995)", genres: "Action|Crime|Drama|Thriller", similarity: 0.9810 },
-                { title: "Se7en (1995)", genres: "Crime|Drama|Mystery|Thriller", similarity: 0.8923 },
-                { title: "Inception (2010)", genres: "Action|Crime|Drama|Mystery|Sci-Fi|Thriller|IMAX", similarity: 0.8711 },
-                { title: "Prisoners (2013)", genres: "Crime|Drama|Mystery|Thriller", similarity: 0.8923 },
-                { title: "The Departed (2006)", genres: "Crime|Drama|Thriller", similarity: 0.9201 },
-                { title: "No Country for Old Men (2007)", genres: "Crime|Drama|Thriller", similarity: 0.9201 },
-                { title: "Zodiac (2007)", genres: "Crime|Drama|Mystery|Thriller", similarity: 0.8923 },
-                { title: "Collateral (2004)", genres: "Action|Crime|Drama|Thriller", similarity: 0.9810 },
-                { title: "L.A. Confidential (1997)", genres: "Crime|Film-Noir|Mystery|Thriller", similarity: 0.8102 },
+                { title: "Batman Begins (2005)", genres: "Action|Crime|Drama|Thriller", similarity: 0.9210 },
+                { title: "Heat (1995)", genres: "Action|Crime|Drama|Thriller", similarity: 0.9101 },
+                { title: "The Departed (2006)", genres: "Crime|Drama|Thriller", similarity: 0.8923 },
+                { title: "Se7en (1995)", genres: "Crime|Drama|Mystery|Thriller", similarity: 0.8711 },
+                { title: "Collateral (2004)", genres: "Action|Crime|Drama|Thriller", similarity: 0.8634 },
+                { title: "Inception (2010)", genres: "Action|Crime|Drama|Mystery|Sci-Fi|Thriller", similarity: 0.8401 },
+                { title: "No Country for Old Men (2007)", genres: "Crime|Drama|Thriller", similarity: 0.8312 },
+                { title: "Prisoners (2013)", genres: "Crime|Drama|Mystery|Thriller", similarity: 0.8201 },
+                { title: "Zodiac (2007)", genres: "Crime|Drama|Mystery|Thriller", similarity: 0.8102 },
+                { title: "L.A. Confidential (1997)", genres: "Crime|Film-Noir|Mystery|Thriller", similarity: 0.7801 },
             ],
         };
 
-        // ─── HELPERS ──────────────────────────────────────────────────
-        function setMovie(title) {
-            document.getElementById('movieInput').value = title;
+        // ── Autocomplete state ──────────────────────────────────────────
+        let acResults = [];
+        let acIndex = -1;
+        let acDebounce = null;
+
+        const input = document.getElementById('movieInput');
+        const dropdown = document.getElementById('acDropdown');
+
+        input.addEventListener('input', () => {
+            clearTimeout(acDebounce);
+            const q = input.value.trim();
+            if (q.length < 2) { closeDropdown(); return; }
+            acDebounce = setTimeout(() => fetchSuggestions(q), 180);
+        });
+
+        input.addEventListener('keydown', (e) => {
+            if (!dropdown.classList.contains('open')) {
+                if (e.key === 'Enter') search();
+                return;
+            }
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                acIndex = Math.min(acIndex + 1, acResults.length - 1);
+                renderHighlight();
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                acIndex = Math.max(acIndex - 1, -1);
+                renderHighlight();
+            } else if (e.key === 'Enter') {
+                e.preventDefault();
+                if (acIndex >= 0 && acResults[acIndex]) {
+                    selectMovie(acResults[acIndex]);
+                } else {
+                    closeDropdown();
+                    search();
+                }
+            } else if (e.key === 'Escape') {
+                closeDropdown();
+            }
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.search-wrapper')) closeDropdown();
+        });
+
+        async function fetchSuggestions(q) {
+            showAcLoading();
+            let results;
+            try {
+                const res = await fetch(`${API_BASE}/movies/search?q=${encodeURIComponent(q)}`);
+                if (!res.ok) throw new Error();
+                const data = await res.json();
+                results = data.results;
+            } catch {
+                // Fall back to mock filtering
+                results = MOCK_MOVIES
+                    .filter(m => m.toLowerCase().includes(q.toLowerCase()))
+                    .slice(0, 8);
+            }
+            acResults = results;
+            acIndex = -1;
+            renderDropdown(q, results);
+        }
+
+        function showAcLoading() {
+            dropdown.innerHTML = `<div class="ac-loading"><div class="ac-spinner"></div>Searching titles...</div>`;
+            dropdown.classList.add('open');
+        }
+
+        function renderDropdown(q, results) {
+            if (!results.length) {
+                dropdown.innerHTML = `<div class="ac-empty">No movies found for "${q}"</div>`;
+                dropdown.classList.add('open');
+                return;
+            }
+
+            const items = results.map((title, i) => {
+                const yearMatch = title.match(/\((\d{4})\)$/);
+                const year = yearMatch ? yearMatch[1] : '';
+                const name = title.replace(/ \(\d{4}\)$/, '');
+                const highlighted = name.replace(
+                    new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi'),
+                    '<mark>$1</mark>'
+                );
+                const emoji = getGenreEmoji(title);
+                return `
+      <div class="autocomplete-item" data-index="${i}" onmousedown="selectMovie('${title.replace(/'/g, "\\'")}')">
+        <div class="ac-left">
+          <div class="ac-icon">${emoji}</div>
+          <div class="ac-title">${highlighted}</div>
+        </div>
+        <div class="ac-year">${year}</div>
+      </div>
+    `;
+            }).join('');
+
+            dropdown.innerHTML = items + `
+    <div class="ac-hint">
+      <kbd>↑</kbd><kbd>↓</kbd> navigate &nbsp;·&nbsp; <kbd>↵</kbd> select &nbsp;·&nbsp; <kbd>esc</kbd> close
+    </div>
+  `;
+            dropdown.classList.add('open');
+        }
+
+        function renderHighlight() {
+            dropdown.querySelectorAll('.autocomplete-item').forEach((el, i) => {
+                el.classList.toggle('active', i === acIndex);
+            });
+        }
+
+        function closeDropdown() {
+            dropdown.classList.remove('open');
+            acIndex = -1;
+            acResults = [];
+        }
+
+        function selectMovie(title) {
+            input.value = title;
+            closeDropdown();
             search();
         }
 
-        function showLoading(v) {
-            document.getElementById('loading').classList.toggle('active', v);
+        // Little genre → emoji mapper for visual flair
+        function getGenreEmoji(title) {
+            const t = title.toLowerCase();
+            if (t.includes('toy') || t.includes('nemo') || t.includes('shrek') || t.includes('lion')) return '🎬';
+            if (t.includes('dark') || t.includes('batman') || t.includes('joker')) return '🦇';
+            if (t.includes('star') || t.includes('matrix') || t.includes('inception') || t.includes('inter')) return '🚀';
+            if (t.includes('god') || t.includes('pulp') || t.includes('goodfel')) return '🎭';
+            if (t.includes('lord') || t.includes('hobbit') || t.includes('harry')) return '⚔️';
+            return '🎞️';
         }
 
+        // ── Main search ────────────────────────────────────────────────
+        function showLoading(v) { document.getElementById('loading').classList.toggle('active', v); }
         function showError(msg) {
             const el = document.getElementById('errorBox');
             el.textContent = msg;
             el.classList.toggle('active', !!msg);
         }
+        function showResults(v) { document.getElementById('results').classList.toggle('active', v); }
 
-        function showResults(v) {
-            document.getElementById('results').classList.toggle('active', v);
-        }
-
-        // ─── SEARCH ───────────────────────────────────────────────────
         async function search() {
-            const title = document.getElementById('movieInput').value.trim();
+            const title = input.value.trim();
             if (!title) return;
-
+            closeDropdown();
             showError('');
             showResults(false);
             showLoading(true);
@@ -635,36 +905,31 @@
 
             let data;
             try {
-                // Try real API first
                 const res = await fetch(`${API_BASE}/recommend/${encodeURIComponent(title)}?n=10`);
-                if (!res.ok) throw new Error(`API error ${res.status}`);
+                if (!res.ok) throw new Error(`${res.status}`);
                 const json = await res.json();
                 data = json.recommendations;
-            } catch (e) {
-                // Fall back to mock data for demo
-                const key = Object.keys(MOCK).find(k => k.toLowerCase().includes(title.toLowerCase()));
+            } catch {
+                const key = Object.keys(MOCK_RECS).find(k => k.toLowerCase() === title.toLowerCase());
                 if (key) {
-                    data = MOCK[key];
-                    document.getElementById('movieInput').value = key;
+                    data = MOCK_RECS[key];
                 } else {
                     showLoading(false);
                     document.getElementById('searchBtn').disabled = false;
-                    showError(`Movie not found. Try: "Toy Story (1995)" or "The Dark Knight (2008)"`);
+                    showError(`Movie not found. Try using the autocomplete to pick an exact title.`);
                     return;
                 }
             }
 
             showLoading(false);
             document.getElementById('searchBtn').disabled = false;
-            renderResults(document.getElementById('movieInput').value.trim(), data);
+            renderResults(title, data);
         }
 
-        // ─── RENDER ───────────────────────────────────────────────────
         function renderResults(query, recs) {
             document.getElementById('queryTitle').textContent = query;
             document.getElementById('resultsMeta').textContent = `${recs.length} results`;
 
-            // Bar chart
             const chart = document.getElementById('barChart');
             chart.innerHTML = '';
             recs.forEach((r, i) => {
@@ -673,8 +938,8 @@
                 row.className = 'bar-row';
                 row.innerHTML = `
       <div class="bar-label" title="${r.title}">${r.title.replace(/ \(\d{4}\)/, '')}</div>
-      <div class="bar-track"><div class="bar-fill" style="width:0%" data-target="${pct}%"></div></div>
-      <div class="bar-score">${(r.similarity * 100).toFixed(1)}%</div>
+      <div class="bar-track"><div class="bar-fill" data-target="${pct}%"></div></div>
+      <div class="bar-score">${pct}%</div>
     `;
                 chart.appendChild(row);
                 setTimeout(() => {
@@ -683,13 +948,12 @@
                 }, i * 60);
             });
 
-            // Cards
             const grid = document.getElementById('cardsGrid');
             grid.innerHTML = '';
             recs.forEach((r, i) => {
                 const card = document.createElement('div');
                 card.className = 'movie-card';
-                card.onclick = () => setMovie(r.title);
+                card.onclick = () => selectMovie(r.title);
                 const genres = r.genres.replace(/\|/g, ' · ');
                 const pct = (r.similarity * 100).toFixed(0);
                 card.innerHTML = `
@@ -706,12 +970,8 @@
             });
 
             showResults(true);
+            document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
-
-        // Enter key
-        document.getElementById('movieInput').addEventListener('keydown', e => {
-            if (e.key === 'Enter') search();
-        });
     </script>
 
 
