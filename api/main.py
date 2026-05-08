@@ -34,10 +34,14 @@ def recommend(title: str, n: int = 10):
     if results is None:
         raise HTTPException(status_code=404, detail=f"Movie '{title}' not found")
     return {"query": title, "count": len(results), "recommendations": results}
+# api/main.py
+from recommender.recommend import fix_title
 
 @app.get("/movies/search")
 def search_movies(q: str):
     matches = recommender.movies[
         recommender.movies['title'].str.contains(q, case=False, na=False)
     ]['title'].head(10).tolist()
-    return {"results": matches}
+    
+    # Fix display titles in autocomplete results too
+    return {"results": [fix_title(t) for t in matches]}
